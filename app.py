@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
-from datetime import datetime, timezone
+import datetime as dt  # This clears up the confusion
 import time
 from streamlit_autorefresh import st_autorefresh
 
@@ -17,16 +17,19 @@ COOLDOWN_SEC = 15
 
 # --- SESSION STATE ---
 if 'daily_count' not in st.session_state: st.session_state.daily_count = 0
-if 'last_call' not in st.session_state: st.session_state.last_call = datetime.min
+if 'last_call' not in st.session_state: 
+    st.session_state.last_call = dt.datetime.min
 if 'api_status' not in st.session_state: st.session_state.api_status = "Unknown"
 if 'history' not in st.session_state: 
     st.session_state.history = pd.DataFrame(columns=["Time", "Pair", "Sentiment", "Signal"])
 
 # --- MARKET & API TOOLS ---
 def get_market_status():
-    now = datetime.now(timezone.utc)
-    # FX Closed Fri 22:00 to Sun 22:00 UTC
-    is_weekend = (now.weekday() == 4 and now.hour >= 22) or (now.weekday() == 5) or (now.weekday() == 6 and now.hour < 22)
+    # Use dt.datetime and dt.timezone
+    now = dt.datetime.now(dt.timezone.utc)
+    is_weekend = (now.weekday() == 4 and now.hour >= 22) or \
+                 (now.weekday() == 5) or \
+                 (now.weekday() == 6 and now.hour < 22)
     return "🔴 CLOSED" if is_weekend else "🟢 OPEN"
 
 def check_api_health():
@@ -97,12 +100,12 @@ if auto_on:
     st_autorefresh(interval=60000, key="auto_refresh")
 
 # Execution button
-wait_time = max(0, COOLDOWN_SEC - int((datetime.now() - st.session_state.last_call).total_seconds()))
+wait_time = max(0, COOLDOWN_SEC - int((dt.datetime.now() - st.session_state.last_call).total_seconds()))
 ready = wait_time == 0 and st.session_state.daily_count < LIMIT_PER_DAY
 
 if ready:
     if st.button("🔍 SCAN FOR DIVERGENCE") or auto_on:
-        st.session_state.last_call = datetime.now()
+    st.session_state.last_call = dt.datetime.now()
         st.session_state.daily_count += 2 # Costs 2 calls (Price + News)
         
         price, vel, sent = fetch_fmp_data(pair, mode)
