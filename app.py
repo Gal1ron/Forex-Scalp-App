@@ -105,7 +105,7 @@ ready = wait_time == 0 and st.session_state.daily_count < LIMIT_PER_DAY
 
 if ready:
     if st.button("🔍 SCAN FOR DIVERGENCE") or auto_on:
-    st.session_state.last_call = dt.datetime.now()
+        st.session_state.last_call = dt.datetime.now()
         st.session_state.daily_count += 2 # Costs 2 calls (Price + News)
         
         price, vel, sent = fetch_fmp_data(pair, mode)
