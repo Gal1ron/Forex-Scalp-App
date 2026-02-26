@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 import requests
 import pandas as pd
 import datetime as dt  # This clears up the confusion
@@ -9,8 +10,10 @@ from streamlit_autorefresh import st_autorefresh
 # This line works for both local (secrets.toml) and Streamlit Cloud
 try:
     FMP_API_KEY = st.secrets["FMP_API_KEY"]
-except:
-    FMP_API_KEY = ""
+except (KeyError, FileNotFoundError):
+    st.error("🔑 **API Key Missing:** Please add `FMP_API_KEY` to your Streamlit Secrets.")
+    st.info("On Local: Add it to `.streamlit/secrets.toml` | On Cloud: Add it in 'Advanced Settings'.")
+    st.stop()
 
 LIMIT_PER_DAY = 250  # FMP Free Tier is actually ~250/day
 COOLDOWN_SEC = 15 
