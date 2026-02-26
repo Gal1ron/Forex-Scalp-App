@@ -7,7 +7,7 @@ from streamlit_autorefresh import st_autorefresh
 
 # --- CONFIG & SECRETS ---
 # This line works for both local (secrets.toml) and Streamlit Cloud
-try:
+except:  #try:
     FMP_API_KEY = st.secrets["FMP_API_KEY"]
 #except:
 #    FMP_API_KEY = "YOUR_LOCAL_KEY_HERE"
