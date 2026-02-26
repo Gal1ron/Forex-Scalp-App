@@ -5,6 +5,32 @@ import pandas as pd
 import datetime as dt  # This clears up the confusion
 import time
 from streamlit_autorefresh import st_autorefresh
+import hmac
+
+def check_password():
+    """Returns `True` if the user had the correct password."""
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if hmac.compare_digest(st.session_state["password"], st.secrets["APP_PASSWORD"]):
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Don't store the password
+        else:
+            st.session_state["password_correct"] = False
+
+    if st.session_state.get("password_correct", False):
+        return True
+
+    # Render login form
+    st.title("🔐 Scalper Access")
+    st.text_input("Enter Password", type="password", on_change=password_entered, key="password")
+    
+    if "password_correct" in st.session_state:
+        st.error("😕 Password incorrect")
+    return False
+
+# --- TRIGGER LOGIN ---
+if not check_password():
+    st.stop()
 
 # --- CONFIG & SECRETS ---
 # This line works for both local (secrets.toml) and Streamlit Cloud
