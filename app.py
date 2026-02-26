@@ -6,7 +6,7 @@ import time
 from streamlit_autorefresh import st_autorefresh
 
 # --- CONFIGURATION ---
-FMP_API_KEY = "t9Hx8gbQBNWlMscylPQMDXhXlRRiE2qu"
+FMP_API_KEY = st.secrets["FMP_API_KEY"]
 LIMIT_PER_DAY = 25
 COOLDOWN_SEC = 15 
 
