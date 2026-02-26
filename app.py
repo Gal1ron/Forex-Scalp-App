@@ -77,7 +77,7 @@ def check_api_health():
 # --- DATA FETCH ---
 def fetch_fmp_data(pair="EURUSD", interval="1min"):
     try:
-        p_url = f"https://financialmodelingprep.com/api/v3/historical-chart/{interval}/{pair}?apikey={FMP_API_KEY}"
+        p_url = f"https://financialmodelingprep.com/stable//historical-chart/{interval}/{pair}?apikey={FMP_API_KEY}"
         p_res = requests.get(p_url).json()
         
         # KEYERROR PROTECTION
@@ -87,7 +87,7 @@ def fetch_fmp_data(pair="EURUSD", interval="1min"):
         latest_p = p_res[0]["close"]
         velocity = abs(latest_p - p_res[1]["close"])
 
-        n_url = f"https://financialmodelingprep.com/api/v3/forex_news?symbol={pair}&limit=5&apikey={FMP_API_KEY}"
+        n_url = f"https://financialmodelingprep.com/stable//forex_news?symbol={pair}&limit=5&apikey={FMP_API_KEY}"
         n_res = requests.get(n_url).json()
         
         score = 0
@@ -118,7 +118,7 @@ with st.sidebar:
         st.progress(min(usage_pct, 1.0))
     
     st.divider()
-    pair = st.selectbox("Select Pair", ["EURUSD", "GBPUSD", "USDJPY"])
+    pair = st.selectbox("Select Pair", ["EURUSD", "GBPUSD", "USDJPY", "EURJPY", "EURGBP", "GBOAUD", "AUDUSD", "AUDCAD" ])
     mode = st.selectbox("Timeframe", ["1min", "5min", "15min"])
     auto_on = st.checkbox("Auto-Refresh (60s)")
 
