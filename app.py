@@ -20,8 +20,14 @@ if 'history' not in st.session_state:
 
 # --- DATA FUNCTIONS ---
 def get_market_status():
-    now = datetime.utcnow()
-    is_weekend = (now.weekday() == 4 and now.hour >= 22) or (now.weekday() == 5) or (now.weekday() == 6 and now.hour < 22)
+    """Updated to fix DeprecationWarning using modern Python 3.11+ syntax"""
+    # Use timezone-aware UTC now
+    now = datetime.datetime.now(datetime.timezone.utc)
+    
+    # Forex is closed Friday 10PM UTC to Sunday 10PM UTC
+    is_weekend = (now.weekday() == 4 and now.hour >= 22) or \
+                 (now.weekday() == 5) or \
+                 (now.weekday() == 6 and now.hour < 22)
     return "🔴 CLOSED" if is_weekend else "🟢 OPEN"
 
 def fetch_fmp_data(pair="EURUSD", interval="1min"):
@@ -50,14 +56,24 @@ def fetch_fmp_data(pair="EURUSD", interval="1min"):
         return None, None, None
 
 def get_strength_data():
-    # Comparing majors against USD to find relative strength
+    """Added safety checks to prevent KeyError: 0"""
     majors = ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD"]
     strength = {}
+    
     for m in majors:
-        url = f"https://financialmodelingprep.com/api/v3/quote/{m}?apikey={FMP_API_KEY}"
-        res = requests.get(url).json()
-        if res:
-            strength[m] = res[0].get("changesPercentage", 0)
+        try:
+            url = f"https://financialmodelingprep.com/api/v3/quote/{m}?apikey={FMP_API_KEY}"
+            res = requests.get(url).json()
+            
+            # Check if res is a list and has at least one item
+            if isinstance(res, list) and len(res) > 0:
+                strength[m] = res[0].get("changesPercentage", 0)
+            else:
+                # If API returns an error message or empty list, log it to the console
+                print(f"API Issue for {m}: {res}")
+                strength[m] = 0
+        except Exception as e:
+            strength[m] = 0
     return strength
 
 # --- UI LAYOUT ---
