@@ -9,8 +9,8 @@ from streamlit_autorefresh import st_autorefresh
 # This line works for both local (secrets.toml) and Streamlit Cloud
 try:
     FMP_API_KEY = st.secrets["FMP_API_KEY"]
-except:
-    FMP_API_KEY = "YOUR_LOCAL_KEY_HERE"
+#except:
+#    FMP_API_KEY = "YOUR_LOCAL_KEY_HERE"
 
 LIMIT_PER_DAY = 250  # FMP Free Tier is actually ~250/day
 COOLDOWN_SEC = 15 
