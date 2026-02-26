@@ -10,7 +10,7 @@ from streamlit_autorefresh import st_autorefresh
 try:
     FMP_API_KEY = st.secrets["FMP_API_KEY"]
 except:
-    FMP_API_KEY = "t9Hx8gbQBNWlMscylPQMDXhXlRRiE2qu"
+    FMP_API_KEY = ""
 
 LIMIT_PER_DAY = 250  # FMP Free Tier is actually ~250/day
 COOLDOWN_SEC = 15 
