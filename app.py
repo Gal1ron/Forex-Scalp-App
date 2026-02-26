@@ -62,7 +62,7 @@ def get_market_status():
     return "🔴 CLOSED" if is_weekend else "🟢 OPEN"
 
 def check_api_health():
-    url = f"https://financialmodelingprep.com/stable/quote?symbol/EURUSD&apikey={FMP_API_KEY}"
+    url = f"https://financialmodelingprep.com/stable/quote?symbol=EURUSD&apikey={FMP_API_KEY}"
     try:
         res = requests.get(url)
         if res.status_code == 200 and isinstance(res.json(), list):
